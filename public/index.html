@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NASA Photo of the Day</title>
+    <!-- Include GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/css/style.css" />
+  </head>
+  <body>
+    <div class="app-header">
+      <h1>
+        <span class="material-icons icon">rocket_launch</span>
+        NASA Photo of the Day
+      </h1>
+    </div>
+
+    <div class="input-container">
+      <input type="date" id="dateInput" class="date-input" />
+      <button class="search-btn" onclick="searchNASA()">
+        <span class="material-icons">search</span> Explore the Cosmos
+      </button>
+    </div>
+
+    <div class="result-container container-hidden" id="resultContainer">
+      <h1 class="result-title" id="title"></h1>
+      <div class="photo-container">
+        <img id="photo" />
+        <div class="photo-placeholder" id="photoPlaceholder">
+          <span class="material-icons">satellite_alt</span>
+          <p>Retrieving cosmic wonders from NASA's archives...</p>
+        </div>
+      </div>
+      <p class="result-description" id="description"></p>
+    </div>
+
+    <div class="blockquote-container" id="initialBlockquote">
+      <blockquote>
+        "Space is for everybody. It’s not just for a few people in science or
+        math, or for a select group of astronauts. That’s our new frontier out
+        there, and it’s everybody’s business to know about space."
+      </blockquote>
+      <div class="blockquote-author">- Christa McAuliffe</div>
+    </div>
+
+    <script src="/src/js/script.js"></script>
+  </body>
+</html>
