@@ -1,93 +1,80 @@
-/* Modernized CSS with space theme and animations */
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 :root {
-  --space-blue: #0b0d21;
-  --space-purple: #1a1c3f;
-  --neon-blue: #00f3ff;
-  --star-gold: #ffd700;
-  --text-light: #f0f8ff;
-  --text-gray: #c4d0e7;
+  --space-dark: #030518;
+  --space-blue: #021a36;
+  --deep-space: #010b1d;
+  --white: #fff;
+  --accent: #00c8ff;
+  --star-glow: rgba(100, 220, 255, 0.9);
+  --nebula-purple: #8a2be2;
+  --nebula-blue: #1e90ff;
 }
 
 body {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-family: "Exo 2", sans-serif;
-  background: linear-gradient(135deg, var(--space-blue), var(--space-purple));
-  color: var(--text-light);
-  padding: 20px;
-  position: relative;
+  font-family: 'Exo 2', sans-serif;
+  background: linear-gradient(to bottom, var(--deep-space), var(--space-blue));
+  color: var(--white);
   overflow-x: hidden;
+  position: relative;
+  line-height: 1.6;
 }
 
-/* Starry background effect */
-body::before {
-  content: "";
-  position: absolute;
+/* Three.js container */
+#spaceCanvas {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: radial-gradient(
-      white,
-      rgba(255, 255, 255, 0.2) 1px,
-      transparent 1px
-    ),
-    radial-gradient(white, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
-    radial-gradient(white, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-  background-size: 200px 200px, 150px 150px, 100px 100px;
-  background-position: 0 0, 40px 60px, 130px 270px;
   z-index: -1;
-  opacity: 0.5;
+  opacity: 0.7;
+}
+
+.content-wrapper {
+  position: relative;
+  z-index: 10;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-header {
   text-align: center;
-  margin: 20px 0 40px;
+  padding: 40px 0 20px;
+  margin-bottom: 20px;
   position: relative;
 }
 
 .app-header h1 {
-  font-family: "Orbitron", sans-serif;
+  font-family: 'Orbitron', sans-serif;
   font-size: 2.8rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   margin-bottom: 15px;
-  text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);
+  text-shadow: 0 0 15px var(--star-glow);
+  background: linear-gradient(to right, #aaffff, var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   position: relative;
   display: inline-block;
-}
-
-.app-header h1::after {
-  content: "";
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--neon-blue),
-    transparent
-  );
 }
 
 .icon {
   font-size: 2.8rem;
   vertical-align: middle;
-  color: var(--neon-blue);
-  text-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
-  margin-right: 10px;
-  animation: pulse 2s infinite ease-in-out;
+  color: var(--accent);
+  margin-right: 15px;
+  animation: float 6s infinite ease-in-out;
+  filter: drop-shadow(0 0 8px var(--accent));
 }
 
 .input-container {
@@ -98,77 +85,59 @@ body::before {
   max-width: 500px;
   margin: 0 auto 40px;
   gap: 20px;
-  background: rgba(16, 18, 42, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(2, 15, 35, 0.4);
+  backdrop-filter: blur(5px);
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(0, 243, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 150, 255, 0.1);
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  position: relative;
+  z-index: 10;
 }
 
 .date-input {
   width: 100%;
-  padding: 15px 20px;
+  padding: 14px 20px;
   font-size: 1.1rem;
-  border: 2px solid rgba(0, 243, 255, 0.3);
+  border: 2px solid rgba(0, 200, 255, 0.3);
   border-radius: 12px;
-  background: rgba(10, 12, 30, 0.7);
-  color: var(--text-light);
-  font-family: "Exo 2", sans-serif;
+  background: rgba(1, 10, 25, 0.8);
+  color: var(--white);
+  font-family: 'Exo 2', sans-serif;
   transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  box-shadow: 0 0 15px rgba(0, 200, 255, 0.1);
+  text-align: center;
 }
 
 .date-input:focus {
   outline: none;
-  border-color: var(--neon-blue);
-  box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+  border-color: var(--accent);
+  box-shadow: 0 0 25px rgba(0, 200, 255, 0.3);
 }
 
 .search-btn {
-  display: flex;
-  gap: 0.7rem;
-  background: linear-gradient(135deg, var(--neon-blue), #0077ff);
+  background: linear-gradient(135deg, var(--accent), #0066cc);
   border: none;
-  padding: 15px 40px;
+  padding: 14px 40px;
   border-radius: 12px;
-  color: var(--space-blue);
+  color: var(--white);
   font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-family: "Orbitron", sans-serif;
-  letter-spacing: 1px;
-  box-shadow: 0 5px 15px rgba(0, 243, 255, 0.3);
+  font-family: 'Exo 2', sans-serif;
+  box-shadow: 0 5px 20px rgba(0, 150, 255, 0.3);
   position: relative;
   overflow: hidden;
   z-index: 1;
-}
-
-.search-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  transition: 0.5s;
-  z-index: -1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .search-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 243, 255, 0.5);
-}
-
-.search-btn:hover::before {
-  left: 100%;
+  box-shadow: 0 8px 25px rgba(0, 200, 255, 0.5);
 }
 
 .search-btn:active {
@@ -180,61 +149,50 @@ body::before {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 800px;
   margin: 0 auto 40px;
-  background: rgba(16, 18, 42, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(2, 15, 35, 0.4);
+  backdrop-filter: blur(5px);
   padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  transform: translateY(20px);
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(0, 150, 255, 0.1);
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  opacity: 0;
+  transform: translateY(30px);
   position: relative;
   overflow: hidden;
 }
 
-.result-container::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
-  opacity: 0.7;
-}
-
 .result-title {
-  font-family: "Orbitron", sans-serif;
-  font-size: 2.2rem;
-  margin-bottom: 20px;
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.8rem;
+  margin-bottom: 25px;
   text-align: center;
-  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-  color: var(--text-light);
-  line-height: 1.3;
+  text-shadow: 0 0 10px var(--star-glow);
+  color: var(--white);
+  line-height: 1.4;
+  max-width: 800px;
 }
 
 .photo-container {
   width: 100%;
-  margin: 15px 0;
-  border-radius: 12px;
+  max-width: 800px;
+  margin: 20px 0 30px;
+  border-radius: 15px;
   overflow: hidden;
   position: relative;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  background: #080a20;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+  background: #000;
   min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid rgba(100, 200, 255, 0.15);
 }
 
 #photo {
   width: 100%;
   display: block;
-  transition: transform 0.5s ease;
-}
-
-#photo:hover {
-  transform: scale(1.02);
+  transition: all 0.8s ease;
 }
 
 .photo-placeholder {
@@ -242,78 +200,67 @@ body::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: var(--text-gray);
+  color: #cceeff;
   padding: 40px;
   text-align: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(1, 5, 15, 0.85);
+  z-index: 2;
 }
 
 .photo-placeholder .material-icons {
   font-size: 4rem;
   margin-bottom: 20px;
-  color: rgba(0, 243, 255, 0.3);
-  animation: spin 2s linear infinite;
+  color: rgba(0, 200, 255, 0.6);
+  animation: pulse 3s infinite ease-in-out;
 }
 
 .result-description {
   font-size: 1.1rem;
   line-height: 1.7;
   margin: 25px 0 15px;
-  color: var(--text-gray);
-  text-align: justify;
-  background: rgba(10, 12, 30, 0.5);
+  color: #ddeeff;
+  text-align: center;
+  background: rgba(1, 10, 25, 0.5);
   padding: 25px;
-  border-radius: 12px;
-  border-left: 3px solid var(--neon-blue);
+  border-radius: 15px;
+  max-width: 800px;
+  border: 1px solid rgba(100, 200, 255, 0.15);
 }
 
 .blockquote-container {
   max-width: 800px;
-  margin: 20px auto 40px;
+  margin: 30px auto;
   padding: 30px;
   text-align: center;
-  background: rgba(16, 18, 42, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
+  background: rgba(2, 15, 35, 0.4);
+  backdrop-filter: blur(5px);
+  border-radius: 20px;
   font-style: italic;
-  font-size: 1.6rem;
-  color: var(--text-gray);
-  border: 1px solid rgba(0, 243, 255, 0.1);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  font-size: 1.5rem;
+  color: #ddeeff;
+  border: 1px solid rgba(0, 200, 255, 0.2);
+  box-shadow: 0 0 30px rgba(0, 150, 255, 0.1);
   position: relative;
-  opacity: 1;
-  transition: opacity 0.5s ease;
-}
-
-.blockquote-container::before,
-.blockquote-container::after {
-  content: '"';
-  font-size: 4rem;
-  position: absolute;
-  opacity: 0.2;
-}
-
-.blockquote-container::before {
-  top: 10px;
-  left: 20px;
-}
-
-.blockquote-container::after {
-  bottom: -20px;
-  right: 20px;
 }
 
 blockquote {
-  font-family: "Exo 2", sans-serif;
+  font-family: 'Exo 2', sans-serif;
   font-weight: 300;
   line-height: 1.6;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.4);
 }
 
 .blockquote-author {
   font-size: 1.2rem;
   margin-top: 15px;
   font-style: normal;
-  color: var(--neon-blue);
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -321,41 +268,35 @@ blockquote {
   display: none;
 }
 
-/* Loading spinner animation */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
+/* Animations */
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.95); opacity: 0.7; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.7; }
 }
 
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 30px 0 20px;
+  color: rgba(180, 210, 255, 0.6);
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  z-index: 10;
+  margin-top: auto;
+}
+
+.footer .copyright {
+  font-size: 0.85em;
+  color: rgba(180, 210, 255, 0.4);
+  margin-top: 8px;
 }
 
 /* Responsive adjustments */
@@ -363,18 +304,28 @@ blockquote {
   .app-header h1 {
     font-size: 2.2rem;
   }
-
+  
   .result-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
-
+  
   .blockquote-container {
     font-size: 1.3rem;
-    padding: 20px;
+    padding: 25px;
+  }
+  
+  .photo-container {
+    min-height: 350px;
+  }
+  
+  .input-container,
+  .result-container {
+    padding: 25px;
   }
 
-  .photo-container {
-    min-height: 300px;
+  .result-description {
+    font-size: 1rem;
+    padding: 20px;
   }
 }
 
@@ -382,29 +333,33 @@ blockquote {
   .app-header h1 {
     font-size: 1.8rem;
   }
-
+  
   .result-title {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
-
+  
   .input-container,
   .result-container,
   .blockquote-container {
     padding: 20px;
   }
-
+  
   .date-input {
     padding: 12px 15px;
     font-size: 1rem;
   }
-
+  
   .search-btn {
     padding: 12px 30px;
     font-size: 1rem;
   }
-
+  
   .result-description {
-    padding: 15px;
-    font-size: 1rem;
+    padding: 20px 15px;
+    font-size: 0.95rem;
+  }
+
+  .blockquote-container {
+    font-size: 1.2rem;
   }
 }

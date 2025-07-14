@@ -157,11 +157,15 @@ function searchNASA() {
               { opacity: 0, scale: 0.95 },
               { opacity: 1, scale: 1, duration: 0.8 }
             );
+            // Scroll result into view after image is shown
+            document.getElementById("resultContainer").scrollIntoView({ behavior: "smooth", block: "start" });
           },
         });
       } else {
         photoPlaceholder.style.display = "none";
         photo.style.display = "block";
+        // Scroll result into view after image is shown
+        document.getElementById("resultContainer").scrollIntoView({ behavior: "smooth", block: "start" });
       }
     };
 
@@ -177,6 +181,8 @@ function searchNASA() {
     `;
     photo.src = "";
     photo.style.display = "none";
+    // Scroll result into view even if no image
+    document.getElementById("resultContainer").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function handleError(err) {
@@ -230,6 +236,153 @@ function searchNASA() {
       element.style.opacity = 1;
     }
   }
+}
+
+// === THREE.JS STARFIELD BACKGROUND ===
+class SpaceBackground {
+  constructor() {
+    if (!this.isWebGLAvailable()) {
+      console.log("WebGL not supported - using fallback background");
+      return;
+    }
+    this.init();
+    this.animate();
+    this.addEventListeners();
+  }
+
+  isWebGLAvailable() {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(
+        window.WebGLRenderingContext &&
+        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
+      );
+    } catch (e) {
+      return false;
+    }
+  }
+
+  init() {
+    // Create or select the background container
+    let bgDiv = document.getElementById('spaceCanvas');
+    if (!bgDiv) {
+      bgDiv = document.createElement('div');
+      bgDiv.id = 'spaceCanvas';
+      bgDiv.style.position = 'fixed';
+      bgDiv.style.top = '0';
+      bgDiv.style.left = '0';
+      bgDiv.style.width = '100vw';
+      bgDiv.style.height = '100vh';
+      bgDiv.style.zIndex = '-1';
+      bgDiv.style.pointerEvents = 'none';
+      document.body.prepend(bgDiv);
+    }
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    this.camera.position.z = 30;
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    this.renderer.setClearColor(0x000000, 0);
+    bgDiv.appendChild(this.renderer.domElement);
+    // Create stars
+    this.stars = this.createStars(1200);
+    this.scene.add(this.stars);
+    // Parallax variables
+    this.mouseX = 0;
+    this.mouseY = 0;
+    this.targetX = 0;
+    this.targetY = 0;
+    window.addEventListener('resize', this.onWindowResize.bind(this));
+  }
+
+  createStars(count) {
+    const vertices = [];
+    for (let i = 0; i < count; i++) {
+      const radius = 500 + Math.random() * 500;
+      const phi = Math.acos(-1 + Math.random() * 2);
+      const theta = Math.random() * Math.PI * 2;
+      const x = radius * Math.sin(phi) * Math.cos(theta);
+      const y = radius * Math.sin(phi) * Math.sin(theta);
+      const z = radius * Math.cos(phi);
+      vertices.push(x, y, z);
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    const starTexture = this.createStarTexture();
+    const material = new THREE.PointsMaterial({
+      size: 4.5, // slightly bigger
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.95, // slightly brighter
+      blending: THREE.AdditiveBlending,
+      map: starTexture,
+      depthWrite: false
+    });
+    return new THREE.Points(geometry, material);
+  }
+
+  createStarTexture() {
+    const size = 64;
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const gradient = ctx.createRadialGradient(
+      size / 2, size / 2, 0,
+      size / 2, size / 2, size / 2
+    );
+    gradient.addColorStop(0, 'rgba(255,255,255,1)');
+    gradient.addColorStop(0.2, 'rgba(255,255,255,0.8)');
+    gradient.addColorStop(0.4, 'rgba(255,255,255,0.3)');
+    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+    const texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+  }
+
+  onWindowResize() {
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  addEventListeners() {
+    document.addEventListener('mousemove', (e) => {
+      this.mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      this.mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+    });
+  }
+
+  animate() {
+    requestAnimationFrame(this.animate.bind(this));
+    // Parallax
+    this.targetX = this.mouseX * 15;
+    this.targetY = this.mouseY * 10;
+    this.camera.position.x += (this.targetX - this.camera.position.x) * 0.05;
+    this.camera.position.y += (this.targetY - this.camera.position.y) * 0.05;
+    this.camera.lookAt(this.scene.position);
+    // Gentle drifting
+    this.stars.rotation.y += 0.0005;
+    this.stars.rotation.x += 0.0002;
+    this.renderer.render(this.scene, this.camera);
+  }
+}
+// Initialize the space background after DOM is ready
+if (typeof THREE !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', function () {
+    new SpaceBackground();
+  });
 }
 
 // Enter key support
