@@ -26,7 +26,7 @@ A beautiful web application that displays NASA's Astronomy Picture of the Day wi
 
 3. **Start the server:**
    ```bash
-   npm start
+   node server.js
    ```
 
 4. **Open your browser:**
